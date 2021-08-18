@@ -5,50 +5,48 @@ import com.parkingsolutions.mlcp_parking.rest.exception.BadInputException;
 import com.parkingsolutions.mlcp_parking.service.MlcpCarParkingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/vi")
+@RequestMapping("/api/v1")
 public class CarParkingController {
-    @Value("${carparking.size}")
-    private int totalSlots;
-    @Autowired
-    private MlcpCarParkingService mlcpCarParkingService;
+  @Value("${carparking.size}")
+  private int totalSlots;
 
-    @GetMapping("/parkings")
-    public ResponseEntity<?> getAvailableParkingSpaces(){
-        int occupiedSlots = mlcpCarParkingService.getAllParkingSlots().size();
-        return ResponseEntity.ok().body("Available slots "+ (totalSlots-occupiedSlots));
-    }
+  @Autowired private MlcpCarParkingService mlcpCarParkingService;
 
-    @PostMapping("/parkings")
-    public ResponseEntity<?> addNewParkingSlot(@RequestBody BookingDetails bookingDetails){
-        validate(bookingDetails);
-        String parkingId = mlcpCarParkingService.reserveParking(bookingDetails);
-        return ResponseEntity.ok().body(parkingId);
-    }
+  @GetMapping("/parkings")
+  public ResponseEntity<?> getAvailableParkingSpaces() {
+    int occupiedSlots = mlcpCarParkingService.getAllParkingSlots().size();
+    return ResponseEntity.ok().body("Available slots " + (totalSlots - occupiedSlots));
+  }
 
-    @PutMapping("/parkings")
-    public ResponseEntity<?> updateBooking(@RequestBody BookingDetails bookingDetails, @RequestParam(name = "extendingTimes") int updatingCount){
-        validate(bookingDetails);
-       String parkingId =  mlcpCarParkingService.updateReservation(bookingDetails,updatingCount);
-        return ResponseEntity.ok().body(parkingId);
-    }
+  @PostMapping("/parkings")
+  public ResponseEntity<?> addNewParkingSlot(@RequestBody BookingDetails bookingDetails) {
+    validate(bookingDetails);
+    String parkingId = mlcpCarParkingService.reserveParking(bookingDetails);
+    return ResponseEntity.ok().body(parkingId);
+  }
 
-    @DeleteMapping("/parkings/{carNumber}")
-    public ResponseEntity deleteBooking(@PathVariable String carNumber){
-        boolean isDeleted = mlcpCarParkingService.deleteParkingSlot(carNumber);
-        if(isDeleted)
-            return ResponseEntity.noContent().build();
-        else
-            return ResponseEntity.internalServerError().build();
-    }
+  @PutMapping("/parkings")
+  public ResponseEntity<?> updateBooking(
+      @RequestBody BookingDetails bookingDetails,
+      @RequestParam(name = "extendingTimes") int updatingCount) {
+    validate(bookingDetails);
+    String parkingId = mlcpCarParkingService.updateReservation(bookingDetails, updatingCount);
+    return ResponseEntity.ok().body(parkingId);
+  }
 
-    private void validate(BookingDetails bookingDetails){
-        if(bookingDetails.getHours() < 0 || bookingDetails.getHours() > 4)
-            throw new BadInputException("hours cannot be less than 4 or greater than 8");
-    }
+  @DeleteMapping("/parkings/{parkingId}")
+  public ResponseEntity deleteBooking(@PathVariable String parkingId) {
+    boolean isDeleted = mlcpCarParkingService.deleteParkingSlot(parkingId);
+    if (isDeleted) return ResponseEntity.noContent().build();
+    else return ResponseEntity.internalServerError().build();
+  }
 
+  private void validate(BookingDetails bookingDetails) {
+    if (bookingDetails.getHours() < 0 || bookingDetails.getHours() > 4)
+      throw new BadInputException("hours cannot be less than 4 or greater than 8");
+  }
 }

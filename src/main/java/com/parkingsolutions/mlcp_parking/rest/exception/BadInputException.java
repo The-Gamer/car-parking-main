@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BadInputException extends RuntimeException {
-    public BadInputException(String s) {
-        super(s);
-    }
+  public BadInputException(String s) {
+    super(s);
+  }
 }

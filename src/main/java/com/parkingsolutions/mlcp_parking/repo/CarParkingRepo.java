@@ -1,41 +1,40 @@
 package com.parkingsolutions.mlcp_parking.repo;
 
 import com.parkingsolutions.mlcp_parking.entity.ParkingSlot;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 
 public class CarParkingRepo {
-    @Value("${carparking.size}")
-    private int size;
-    private static List<ParkingSlot> parkingSlots = null;
+  @Value("${carparking.size}")
+  private int size;
 
-    public CarParkingRepo(){
-        parkingSlots = new ArrayList<>(size);
-    }
+  private static List<ParkingSlot> parkingSlots = null;
 
-    public List<ParkingSlot> getParkings(){
-        if(parkingSlots==null){
-            parkingSlots = new ArrayList<>(size);
-        }
-        return parkingSlots;
-    }
+  public CarParkingRepo() {
+    parkingSlots = new ArrayList<>(size);
+  }
 
-    public ParkingSlot addCarParkingBooking(ParkingSlot parkingSlot) {
-        parkingSlots.add(parkingSlot);
-        return parkingSlot;
-    }
+  public List<ParkingSlot> getParkings() {
+    return parkingSlots;
+  }
 
-    public ParkingSlot getBookingBasedOnCarNumber(String carNumber) {
-        ParkingSlot parkingSlot = parkingSlots.stream().filter(e -> e.getCarNumber().equals(carNumber)).findFirst().orElse(null);
-        return parkingSlot;
-    }
+  public ParkingSlot addCarParkingBooking(ParkingSlot parkingSlot) {
+    parkingSlots.add(parkingSlot);
+    return parkingSlot;
+  }
 
-    public boolean deleteParkignSlot(String carNumber) {
-        ParkingSlot parkingSlot = getBookingBasedOnCarNumber(carNumber);
-        return parkingSlots.remove(parkingSlot);
-    }
+  public ParkingSlot getBookingBasedOnCarNumber(String parkingId) {
+    ParkingSlot parkingSlot =
+        parkingSlots.stream()
+            .filter(e -> e.getParkingId().equals(parkingId))
+            .findFirst()
+            .orElse(null);
+    return parkingSlot;
+  }
 
+  public boolean deleteParkingSlot(String parkingId) {
+    ParkingSlot parkingSlot = getBookingBasedOnCarNumber(parkingId);
+    return parkingSlots.remove(parkingSlot);
+  }
 }

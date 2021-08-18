@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MlcpParkingApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MlcpParkingApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(MlcpParkingApplication.class, args);
+  }
 }
