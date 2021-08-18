@@ -3,6 +3,7 @@ package com.parkingsolutions.mlcp_parking.service;
 import com.parkingsolutions.mlcp_parking.dto.BookingDetails;
 import com.parkingsolutions.mlcp_parking.entity.ParkingSlot;
 import com.parkingsolutions.mlcp_parking.repo.CarParkingRepo;
+import com.parkingsolutions.mlcp_parking.rest.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,9 @@ public class MlcpCarParkingService {
 
     public String updateReservation(BookingDetails bookingDetails, int count) {
         ParkingSlot retrievedParkingSlot = carParkingrepo.getBookingBasedOnCarNumber(bookingDetails.getCarNumber());
+        if(retrievedParkingSlot==null){
+            throw new NotFoundException("The parking slot you are trying to update is not found");
+        }
         //deleting old Parking entry
         carParkingrepo.deleteParkignSlot(bookingDetails.getCarNumber());
         //creating new parking entry

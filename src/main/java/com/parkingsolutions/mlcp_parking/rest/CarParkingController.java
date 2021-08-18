@@ -50,4 +50,5 @@ public class CarParkingController {
         if(bookingDetails.getHours() < 0 || bookingDetails.getHours() > 4)
             throw new BadInputException("hours cannot be less than 4 or greater than 8");
     }
+
 }
